@@ -1,37 +1,17 @@
-name: Deploy to VPS Live
+name: Test GitHub Actions
 
 on:
   push:
     branches:
-      - development
+      - main
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.VPS_KEY }}
-
-      - name: Deploy to VPS
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-            set -e
-
-            cd /home/sendy/repository/web-scrapper
-
-            echo "➡️ Pulling latest code..."
-            git fetch origin
-            git reset --hard origin/development
-
-            echo "➡️ Refresh Dependency for Python..."
-            pip install -r requirements.txt
-
-            echo "➡️ Restarting service..."
-            sudo systemctl restart web-scrapper
-          EOF
+      - name: Hello World
+        run: echo "GitHub Actions berjalan dengan baik!"
