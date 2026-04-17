@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import os
 from dataclasses import asdict
 from typing import Any
 
+from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from flasgger import Swagger
+
+load_dotenv()
 
 from linkedin_jobs_scraper import save_to_csv, scrape_linkedin_jobs
 
@@ -154,4 +158,5 @@ def scrape_jobs() -> Any:
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
