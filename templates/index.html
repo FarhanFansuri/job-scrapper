@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkedIn Job Scraper Frontend</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: #1f2937;
+      --soft: #334155;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #111827);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      margin-bottom: 20px;
+      padding: 24px;
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .links {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .links a {
+      text-decoration: none;
+      color: white;
+      background: var(--soft);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .panel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .form-card,
+    .result-card {
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      outline: none;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      color: var(--text);
+    }
+
+    .actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #082f49;
+    }
+
+    .btn-secondary {
+      background: var(--soft);
+      color: white;
+    }
+
+    .status {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .status.info { display: block; background: rgba(56, 189, 248, 0.15); color: #bae6fd; }
+    .status.success { display: block; background: rgba(34, 197, 94, 0.15); color: #bbf7d0; }
+    .status.error { display: block; background: rgba(239, 68, 68, 0.15); color: #fecaca; }
+
+    .summary {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .summary-item {
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 12px;
+      padding: 10px 14px;
+      min-width: 140px;
+    }
+
+    .summary-item small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .jobs-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .job-card {
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .job-title {
+      margin: 0;
+      font-size: 18px;
+      color: #f8fafc;
+    }
+
+    .job-company {
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .job-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+
+    .job-badge {
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .job-description {
+      margin: 0 0 10px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .job-link {
+      display: inline-block;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 8px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 14px; }
+      .hero h1 { font-size: 22px; }
+      .job-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>LinkedIn Job Scraper Frontend</h1>
+      <p>
+        Halaman ini membaca API Flask dan menampilkan daftar lowongan kerja LinkedIn publik
+        dalam bentuk card agar lebih mudah dipakai user non-teknis.
+      </p>
+      <div class="links">
+        <a href="/apidocs/" target="_blank">Buka Swagger</a>
+        <a href="/health" target="_blank">Cek Health</a>
+      </div>
+    </section>
+
+    <div class="panel">
+      <section class="form-card">
+        <h2>Cari Lowongan</h2>
+        <div class="form-grid">
+          <div>
+            <label for="keywords">Keywords</label>
+            <input id="keywords" type="text" value="Data Analyst" placeholder="Contoh: Data Analyst" />
+          </div>
+          <div>
+            <label for="location">Location</label>
+            <input id="location" type="text" value="Indonesia" placeholder="Contoh: Jakarta" />
+          </div>
+          <div>
+            <label for="pages">Pages</label>
+            <input id="pages" type="number" value="1" min="1" />
+          </div>
+          <div>
+            <label for="delay">Delay (detik)</label>
+            <input id="delay" type="number" value="1" min="0" step="0.5" />
+          </div>
+          <div>
+            <label for="output">Simpan ke CSV (opsional)</label>
+            <input id="output" type="text" placeholder="contoh: hasil.csv" />
+          </div>
+        </div>
+
+        <label class="checkbox-row">
+          <input id="includeDescription" type="checkbox" />
+          Ambil deskripsi lowongan
+        </label>
+
+        <div class="actions">
+          <button class="btn-primary" id="searchBtn">Cari Job</button>
+          <button class="btn-secondary" id="resetBtn" type="button">Reset</button>
+        </div>
+
+        <div id="status" class="status info">Siap mencari data job.</div>
+      </section>
+
+      <section class="result-card">
+        <h2>Hasil Pencarian</h2>
+        <div id="summary" class="summary"></div>
+        <div id="jobsBody" class="jobs-list">
+          <div class="empty">Belum ada data. Tekan tombol <strong>Cari Job</strong>.</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const summaryEl = document.getElementById('summary');
+    const jobsBodyEl = document.getElementById('jobsBody');
+
+    function setStatus(type, message) {
+      statusEl.className = `status ${type}`;
+      statusEl.textContent = message;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderSummary(data) {
+      summaryEl.innerHTML = `
+        <div class="summary-item"><small>Keywords</small><strong>${escapeHtml(data.keywords)}</strong></div>
+        <div class="summary-item"><small>Location</small><strong>${escapeHtml(data.location)}</strong></div>
+        <div class="summary-item"><small>Total</small><strong>${escapeHtml(data.total)}</strong></div>
+        <div class="summary-item"><small>Pages</small><strong>${escapeHtml(data.pages)}</strong></div>
+      `;
+    }
+
+    function renderJobs(jobs) {
+      if (!jobs || jobs.length === 0) {
+        jobsBodyEl.innerHTML = '<div class="empty">Data job tidak ditemukan.</div>';
+        return;
+      }
+
+      jobsBodyEl.innerHTML = jobs.map((job) => `
+        <article class="job-card">
+          <div class="job-header">
+            <div>
+              <h3 class="job-title">${escapeHtml(job.title || '-')}</h3>
+              <p class="job-company">${escapeHtml(job.company || '-')}</p>
+            </div>
+            <a class="job-link" href="${escapeHtml(job.job_link || '#')}" target="_blank" rel="noopener noreferrer">Buka job</a>
+          </div>
+          <div class="job-meta">
+            <span class="job-badge">📍 ${escapeHtml(job.location || '-')}</span>
+            <span class="job-badge">🕒 ${escapeHtml(job.posted_time || '-')}</span>
+          </div>
+          ${job.description ? `<p class="job-description">${escapeHtml(job.description)}</p>` : ''}
+        </article>
+      `).join('');
+    }
+
+    async function fetchJobs() {
+      const keywords = document.getElementById('keywords').value.trim();
+      const location = document.getElementById('location').value.trim();
+      const pages = document.getElementById('pages').value.trim();
+      const delay = document.getElementById('delay').value.trim();
+      const output = document.getElementById('output').value.trim();
+      const includeDescription = document.getElementById('includeDescription').checked;
+
+      if (!keywords) {
+        setStatus('error', 'Parameter keywords wajib diisi.');
+        return;
+      }
+
+      const params = new URLSearchParams({
+        keywords,
+        location: location || 'Indonesia',
+        pages: pages || '1',
+        delay: delay || '1'
+      });
+
+      if (includeDescription) params.append('include_description', 'true');
+      if (output) params.append('output', output);
+
+      setStatus('info', 'Sedang mengambil data job dari API...');
+      jobsBodyEl.innerHTML = '<div class="empty">Loading data...</div>';
+      summaryEl.innerHTML = '';
+
+      try {
+        const response = await fetch(`/api/scrape-jobs?${params.toString()}`);
+        const data = await response.json();
+
+        if (!response.ok || data.success === false) {
+          throw new Error(data.error || 'Gagal mengambil data dari server.');
+        }
+
+        renderSummary(data);
+        renderJobs(data.jobs || []);
+        setStatus('success', `Berhasil mengambil ${data.total} lowongan.` + (data.saved_to ? ` File disimpan ke ${data.saved_to}.` : ''));
+      } catch (error) {
+        jobsBodyEl.innerHTML = '<div class="empty">Terjadi error saat mengambil data.</div>';
+        setStatus('error', error.message || 'Terjadi kesalahan.');
+      }
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', fetchJobs);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      document.getElementById('keywords').value = 'Data Analyst';
+      document.getElementById('location').value = 'Indonesia';
+      document.getElementById('pages').value = '1';
+      document.getElementById('delay').value = '1';
+      document.getElementById('output').value = '';
+      document.getElementById('includeDescription').checked = false;
+      summaryEl.innerHTML = '';
+      jobsBodyEl.innerHTML = '<div class="empty">Belum ada data. Tekan tombol <strong>Cari Job</strong>.</div>';
+      setStatus('info', 'Form berhasil direset.');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+Saya diminta untuk melakukan job scrapping oleh atasan saya. saya dimanti untuk melakukan scrapping dari apa saja pekerjaan yang tersedia di platform mencari kerja. 
+di sini saya menggunakan linkedin sebagai platformnya. bisakah kamu cob buatkan orogram web scrapper untuk scrapping job yang ada di platform linkedin?

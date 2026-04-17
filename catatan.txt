@@ -1,0 +1,8 @@
+⚠️ Catatan
+Gunakan untuk lowongan publik saja.
+Tetap patuhi kebijakan platform dan jangan kirim request terlalu agresif.
+Jika perlu, saya bisa lanjut tambahkan versi yang:
+
+simpan ke Excel,
+filter berdasarkan company/location,
+atau scrape lebih banyak field seperti seniority dan employment type.
